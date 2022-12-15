@@ -1,25 +1,58 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {FormEvent, useState} from 'react';
 import './App.css';
+import {Todo, Todolist} from "./interfaces";
+import {nanoid} from "nanoid";
+
+
 
 function App() {
+    const [todos,setTodos] = useState<Todolist>([]);
+    const [input,setInput] = useState("");
+
+
+
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) =>{
+        const newTodo: Todo = {
+            id: nanoid(),
+            title: input,
+            checked: false
+        };
+
+        e.preventDefault();
+        setTodos([...todos, newTodo]);
+        setInput("");
+
+
+    }
+    const handleDelete = (id: string) => {
+        const newTodos = todos.filter(todo => todo.id !== id);
+        setTodos(newTodos);
+
+    };
+
+
+
+
   return (
+      <>
+      <h1>Форум</h1>
+    <body>
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     <form  onSubmit={handleSubmit}>
+          <input placeholder="добавить пост"   type="text" value={input} onChange={e => setInput(e.target.value)}/>
+          <button type="submit">Yep</button>
+
+     </form>
+        <ul>
+            {todos.map(todo => <li>
+                {todo.title}
+                <button onClick={() => handleDelete(todo.id)}>❌</button>
+            </li>)}
+
+        </ul>
     </div>
+    </body>
+      </>
   );
 }
 
